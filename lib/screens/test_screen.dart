@@ -2,11 +2,11 @@
 //import 'dart:html';
 
 import 'package:flutter/material.dart';
-
+import 'package:soundpool/soundpool.dart';
 class TestScreen extends StatefulWidget {
   final numberOFQuestions;
 
-  TestScreen(this.numberOFQuestions);
+  TestScreen({@required this.numberOFQuestions});
 
   @override
   _TestScreenState createState() => _TestScreenState();
@@ -21,6 +21,28 @@ class _TestScreenState extends State<TestScreen> {
   int questionRight = 0;
   String operator = "+";
   String answerString = "5";
+  Soundpool _Soundpool;
+
+  int soundIdCorrect = 0;
+  int soundIdInCorrect = 0;
+
+  @override
+  void initState() {
+    super.initState();
+     numberOfCorrect = 0;
+     correctRate = 0;
+     numberOfRemaining = widget.numberOFQuestions;
+
+     //TODO 効果音の準備
+     initState();
+     setQuestion();
+  }
+
+  // void initState() async{
+  //   Soundpool = Soundpool();
+  //   soundIdCorrect = loadSound("assets/sounds/sound_correct.mp3");
+  //   soundIdCorrect = loadSound("assets/sounds/sound_correct.mp3");
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -200,6 +222,9 @@ class _TestScreenState extends State<TestScreen> {
   Widget _correctIncorrectImage() {
     return Center(child: Image.asset("assets/images/pic_correct.png"));
   }
+
+  //問題を出す
+  void setQuestion() {}
 
 }
 

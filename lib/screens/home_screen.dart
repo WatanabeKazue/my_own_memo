@@ -115,8 +115,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
   startTestScreen(BuildContext context) {
     Navigator.push(
-        context, MaterialPageRoute(
-        builder: (context) => TestScreen(_numberOfQuestions)));
+        context,
+        MaterialPageRoute(
+        builder: (context) => TestScreen(
+             numberOFQuestions: _numberOfQuestions
+        )));
   }
 
 
