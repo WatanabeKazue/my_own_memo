@@ -3,6 +3,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:soundpool/soundpool.dart';
+
+
 class TestScreen extends StatefulWidget {
   final numberOFQuestions;
 
@@ -21,28 +23,31 @@ class _TestScreenState extends State<TestScreen> {
   int questionRight = 0;
   String operator = "+";
   String answerString = "5";
-  Soundpool _Soundpool;
 
+  Soundpool soundpool;
   int soundIdCorrect = 0;
   int soundIdInCorrect = 0;
 
   @override
   void initState() {
     super.initState();
-     numberOfCorrect = 0;
-     correctRate = 0;
-     numberOfRemaining = widget.numberOFQuestions;
+    numberOfCorrect = 0;
+    correctRate = 0;
+    numberOfRemaining = widget.numberOFQuestions;
 
-     //TODO 効果音の準備
-     initState();
-     setQuestion();
+    //TODO 効果音の準備
+    initSounds();
+
+    setQuestion();
   }
 
-  // void initState() async{
-  //   Soundpool = Soundpool();
-  //   soundIdCorrect = loadSound("assets/sounds/sound_correct.mp3");
-  //   soundIdCorrect = loadSound("assets/sounds/sound_correct.mp3");
-  // }
+  Future<void> initSounds() async {
+    soundpool = Soundpool();
+    soundIdCorrect = await loadSound("assets/sounds/sound_correct.mp3");
+    soundIdInCorrect = await loadSound("assets/sounds/sound_incorrect.mp3");
+  }
+
+  loadSound(String s) {}
 
   @override
   Widget build(BuildContext context) {
@@ -83,37 +88,37 @@ class _TestScreenState extends State<TestScreen> {
             children: [
               Center(
                   child: Text(
-                    "のこり問題数",
-                    style: TextStyle(fontSize: 10.0),
-                  )),
+                "のこり問題数",
+                style: TextStyle(fontSize: 10.0),
+              )),
               Center(
                   child: Text(
-                    "正解数",
-                    style: TextStyle(fontSize: 10.0),
-                  )),
+                "正解数",
+                style: TextStyle(fontSize: 10.0),
+              )),
               Center(
                   child: Text(
-                    "正答率",
-                    style: TextStyle(fontSize: 10.0),
-                  )),
+                "正答率",
+                style: TextStyle(fontSize: 10.0),
+              )),
             ],
           ),
           TableRow(children: [
             Center(
                 child: Text(
-                  numberOfRemaining.toString(),
-                  style: TextStyle(fontSize: 18.0),
-                )),
+              numberOfRemaining.toString(),
+              style: TextStyle(fontSize: 18.0),
+            )),
             Center(
                 child: Text(
-                  numberOfCorrect.toString(),
-                  style: TextStyle(fontSize: 18.0),
-                )),
+              numberOfCorrect.toString(),
+              style: TextStyle(fontSize: 18.0),
+            )),
             Center(
                 child: Text(
-                  correctRate.toString(),
-                  style: TextStyle(fontSize: 18.0),
-                )),
+              correctRate.toString(),
+              style: TextStyle(fontSize: 18.0),
+            )),
           ]),
         ],
       ),
@@ -171,34 +176,26 @@ class _TestScreenState extends State<TestScreen> {
         padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 8.0),
         child: Table(
           children: [
-            TableRow(
-                children: [
-                  _calcButton("7"),
-                  _calcButton("8"),
-                  _calcButton("9"),
-                ]
-            ),
-            TableRow(
-                children: [
-                  _calcButton("4"),
-                  _calcButton("5"),
-                  _calcButton("6"),
-                ]
-            ),
-            TableRow(
-                children: [
-                  _calcButton("1"),
-                  _calcButton("2"),
-                  _calcButton("3"),
-                ]
-            ),
-            TableRow(
-                children: [
-                  _calcButton("0"),
-                  _calcButton("-"),
-                  _calcButton("C"),
-                ]
-            ),
+            TableRow(children: [
+              _calcButton("7"),
+              _calcButton("8"),
+              _calcButton("9"),
+            ]),
+            TableRow(children: [
+              _calcButton("4"),
+              _calcButton("5"),
+              _calcButton("6"),
+            ]),
+            TableRow(children: [
+              _calcButton("1"),
+              _calcButton("2"),
+              _calcButton("3"),
+            ]),
+            TableRow(children: [
+              _calcButton("0"),
+              _calcButton("-"),
+              _calcButton("C"),
+            ]),
           ],
         ),
       ),
@@ -210,10 +207,12 @@ class _TestScreenState extends State<TestScreen> {
       padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 5.0),
       child: ElevatedButton(
         style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all<Color>(Colors.brown)
-        ),
+            backgroundColor: MaterialStateProperty.all<Color>(Colors.brown)),
         onPressed: () => print(numString), //TODO
-        child: Text(numString, style: TextStyle(fontSize: 24.0),),
+        child: Text(
+          numString,
+          style: TextStyle(fontSize: 24.0),
+        ),
       ),
     );
   }
@@ -223,50 +222,55 @@ class _TestScreenState extends State<TestScreen> {
     return Center(child: Image.asset("assets/images/pic_correct.png"));
   }
 
+  //TODO テスト終了メッセージ
+  Widget _endMessage() {
+    // 後で消してもOK↓
+    return Center(
+        child: Text(
+      "テスト終了",
+      style: TextStyle(fontSize: 30.0),
+    ));
+  }
+
+//TODO 答え合わせボタン
+  Widget _answerCheckButton() {
+    return Padding(
+      padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+      child: SizedBox(
+        width: double.infinity,
+        child: ElevatedButton(
+          style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all<Color>(Colors.brown)),
+          onPressed: null,
+          child: Text(
+            "こたえあわせ",
+            style: TextStyle(fontSize: 14.0),
+          ),
+        ),
+      ),
+    );
+  }
+
+// 戻るボタン
+  Widget _backButton() {
+    return Padding(
+      padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 8.0),
+      child: SizedBox(
+        width: double.infinity,
+        child: ElevatedButton(
+          style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all<Color>(Colors.green)),
+          onPressed: null,
+          child: Text(
+            "戻る",
+            style: TextStyle(fontSize: 14.0),
+          ),
+        ),
+      ),
+    );
+  }
+
   //問題を出す
   void setQuestion() {}
 
 }
-
-
-//TODO テスト終了メッセージ
-  Widget _endMessage() {
-  // 後で消してもOK↓
-  return Center(child: Text("テスト終了", style: TextStyle(fontSize: 30.0),));
-}
-
-//TODO 答え合わせボタン
-Widget _answerCheckButton() {
-  return Padding(
-    padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-    child: SizedBox(
-      width: double.infinity,
-      child: ElevatedButton(
-        style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all<Color>(Colors.brown)
-        ),
-        onPressed: null,
-        child: Text("こたえあわせ", style: TextStyle(fontSize: 14.0),),
-      ),
-    ),
-  );
-}
-
-// 戻るボタン
-Widget _backButton() {
-  return Padding(
-    padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 8.0),
-    child: SizedBox(
-      width: double.infinity,
-      child: ElevatedButton(
-        style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all<Color>(Colors.green)
-        ),
-        onPressed: null,
-        child: Text("戻る", style: TextStyle(fontSize: 14.0),),
-      ),
-    ),
-  );
-}
-
-
